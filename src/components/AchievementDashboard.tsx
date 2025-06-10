@@ -87,7 +87,7 @@ const AchievementDashboard = () => {
             <TabsTrigger value="all">Все</TabsTrigger>
             <TabsTrigger value="digital">Цифровые</TabsTrigger>
             <TabsTrigger value="physical">Физические</TabsTrigger>
-            <TabsTrigger value="hybrid">Гибридные</TabsTrigger>
+            <TabsTrigger value="hybrid">Фиджитал</TabsTrigger>
           </TabsList>
 
           <TabsContent value="all" className="space-y-4">
