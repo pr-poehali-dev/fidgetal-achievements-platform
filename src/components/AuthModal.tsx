@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -17,23 +18,55 @@ interface AuthModalProps {
 
 const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    birthDate: "",
+    city: "",
+  });
+  const { login } = useAuth();
 
   const handleVKAuth = () => {
-    // В реальном приложении здесь будет интеграция с VK API
     console.log("Авторизация через ВК");
-    alert("🚀 Авторизация через ВК будет доступна в ближайшее время!");
+    login({ name: "Пользователь ВК", email: "vk@example.com" });
+    alert("🚀 Авторизация через ВК выполнена!");
+    onClose();
+  };
+
+  const handleGosuslugiAuth = () => {
+    console.log("Авторизация через Госуслуги");
+    login({
+      name: "Иванов Иван Иванович",
+      email: "ivanov@gosuslugi.ru",
+      phone: "+7 (900) 123-45-67",
+      city: "Москва",
+    });
+    alert("🏛️ Авторизация через Госуслуги выполнена!");
+    onClose();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(isLogin ? "Вход" : "Регистрация");
+
+    if (isLogin) {
+      login({ name: formData.name || "Пользователь", email: formData.email });
+    } else {
+      login(formData);
+    }
+
     alert(`${isLogin ? "Вход" : "Регистрация"} выполнен!`);
     onClose();
   };
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">
             {isLogin ? "Вход в аккаунт" : "Создать аккаунт"}
@@ -41,13 +74,23 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         </DialogHeader>
 
         <div className="space-y-4">
-          <Button
-            onClick={handleVKAuth}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <Icon name="ExternalLink" size={20} className="mr-2" />
-            Войти через ВКонтакте
-          </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              onClick={handleVKAuth}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <Icon name="ExternalLink" size={16} className="mr-2" />
+              ВКонтакте
+            </Button>
+
+            <Button
+              onClick={handleGosuslugiAuth}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              <Icon name="Shield" size={16} className="mr-2" />
+              Госуслуги
+            </Button>
+          </div>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -66,6 +109,8 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
               <Input
                 id="email"
                 type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
                 placeholder="example@mail.ru"
                 required
               />
@@ -73,14 +118,61 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
             <div className="space-y-2">
               <Label htmlFor="password">Пароль</Label>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                required
+              />
             </div>
 
             {!isLogin && (
-              <div className="space-y-2">
-                <Label htmlFor="name">Имя</Label>
-                <Input id="name" placeholder="Ваше имя" required />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Полное имя</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    placeholder="Иванов Иван Иванович"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Телефон</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    placeholder="+7 (900) 123-45-67"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="birthDate">Дата рождения</Label>
+                  <Input
+                    id="birthDate"
+                    type="date"
+                    value={formData.birthDate}
+                    onChange={(e) =>
+                      handleInputChange("birthDate", e.target.value)
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="city">Город</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    placeholder="Москва"
+                  />
+                </div>
+              </>
             )}
 
             <Button

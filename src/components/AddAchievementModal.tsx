@@ -28,15 +28,51 @@ const AddAchievementModal = ({ isOpen, onClose }: AddAchievementModalProps) => {
     name: "",
     description: "",
     type: "",
+    category: "",
     rarity: "",
     xp: "",
   });
+
+  const getCategoriesByType = (type: string) => {
+    switch (type) {
+      case "digital":
+        return [
+          { value: "cs-go", label: "Counter-Strike: Global Offensive" },
+          { value: "dota2", label: "Dota 2" },
+          { value: "lol", label: "League of Legends" },
+          { value: "valorant", label: "Valorant" },
+          { value: "overwatch", label: "Overwatch" },
+        ];
+      case "physical":
+        return [
+          { value: "football", label: "Футбол" },
+          { value: "basketball", label: "Баскетбол" },
+          { value: "tennis", label: "Теннис" },
+          { value: "running", label: "Бег" },
+          { value: "swimming", label: "Плавание" },
+        ];
+      case "hybrid":
+        return [
+          { value: "mixed", label: "Смешанные соревнования" },
+          { value: "esports-sports", label: "Киберспорт + Спорт" },
+        ];
+      default:
+        return [];
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Новое достижение:", formData);
     alert(`🏆 Достижение "${formData.name}" успешно добавлено!`);
-    setFormData({ name: "", description: "", type: "", rarity: "", xp: "" });
+    setFormData({
+      name: "",
+      description: "",
+      type: "",
+      category: "",
+      rarity: "",
+      xp: "",
+    });
     onClose();
   };
 
@@ -58,7 +94,7 @@ const AddAchievementModal = ({ isOpen, onClose }: AddAchievementModalProps) => {
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
-              placeholder="Например: Первая победа"
+              placeholder="Например: Первая победа в CS:GO"
               required
             />
           </div>
@@ -76,45 +112,66 @@ const AddAchievementModal = ({ isOpen, onClose }: AddAchievementModalProps) => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Тип</Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, type: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Выберите тип" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="digital">Цифровое</SelectItem>
-                  <SelectItem value="physical">Физическое</SelectItem>
-                  <SelectItem value="hybrid">Гибридное</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <Label>Тип</Label>
+            <Select
+              value={formData.type}
+              onValueChange={(value) =>
+                setFormData({ ...formData, type: value, category: "" })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите тип" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="digital">Цифровое (Киберспорт)</SelectItem>
+                <SelectItem value="physical">Физическое (Спорт)</SelectItem>
+                <SelectItem value="hybrid">Гибридное</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
+          {formData.type && (
             <div className="space-y-2">
-              <Label>Редкость</Label>
+              <Label>Категория</Label>
               <Select
-                value={formData.rarity}
+                value={formData.category}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, rarity: value })
+                  setFormData({ ...formData, category: value })
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Редкость" />
+                  <SelectValue placeholder="Выберите категорию" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="common">Обычное</SelectItem>
-                  <SelectItem value="rare">Редкое</SelectItem>
-                  <SelectItem value="epic">Эпическое</SelectItem>
-                  <SelectItem value="legendary">Легендарное</SelectItem>
+                  {getCategoriesByType(formData.type).map((category) => (
+                    <SelectItem key={category.value} value={category.value}>
+                      {category.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
+          )}
+
+          <div className="space-y-2">
+            <Label>Редкость</Label>
+            <Select
+              value={formData.rarity}
+              onValueChange={(value) =>
+                setFormData({ ...formData, rarity: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Редкость" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="common">Обычное</SelectItem>
+                <SelectItem value="rare">Редкое</SelectItem>
+                <SelectItem value="epic">Эпическое</SelectItem>
+                <SelectItem value="legendary">Легендарное</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
