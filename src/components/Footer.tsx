@@ -8,7 +8,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Icon name="Trophy" size={24} className="text-primary" />
-              <h4 className="text-xl font-bold">FiDigital</h4>
+              <h4 className="text-xl font-bold">PhygitalHub</h4>
             </div>
             <p className="text-gray-400">
               Платформа для учета достижений и участия в турнирах

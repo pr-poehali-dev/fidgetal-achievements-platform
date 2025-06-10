@@ -1,7 +1,16 @@
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
+import InfoModal from "@/components/InfoModal";
 
 const Hero = () => {
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+
+  const handleStartPlaying = () => {
+    const tournamentsSection = document.getElementById("tournaments");
+    tournamentsSection?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="bg-gradient-to-br from-dark via-tertiary to-secondary text-white py-20">
       <div className="container mx-auto text-center">
@@ -18,6 +27,7 @@ const Hero = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
+            onClick={handleStartPlaying}
             size="lg"
             className="bg-primary hover:bg-secondary text-lg px-8"
           >
@@ -25,6 +35,7 @@ const Hero = () => {
             Начать играть
           </Button>
           <Button
+            onClick={() => setIsInfoModalOpen(true)}
             size="lg"
             variant="outline"
             className="text-lg px-8 border-primary text-primary hover:bg-primary hover:text-white"
@@ -34,6 +45,11 @@ const Hero = () => {
           </Button>
         </div>
       </div>
+
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
+      />
     </section>
   );
 };

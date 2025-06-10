@@ -130,7 +130,14 @@ const TournamentList = () => {
                 </div>
 
                 {canParticipate(tournament.minRating, tournament.maxRating) ? (
-                  <Button className="w-full bg-primary hover:bg-secondary">
+                  <Button
+                    onClick={() => {
+                      alert(
+                        `🎮 Вы успешно зарегистрированы на турнир "${tournament.name}"!`,
+                      );
+                    }}
+                    className="w-full bg-primary hover:bg-secondary"
+                  >
                     <Icon name="UserPlus" size={16} className="mr-2" />
                     Регистрация
                   </Button>

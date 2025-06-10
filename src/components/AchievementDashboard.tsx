@@ -3,8 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
+import AddAchievementModal from "@/components/AddAchievementModal";
 
 const AchievementDashboard = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const achievements = [
     {
       id: 1,
@@ -70,7 +73,10 @@ const AchievementDashboard = () => {
           <h3 className="text-3xl font-bold text-dark">
             Управление достижениями
           </h3>
-          <Button className="bg-primary hover:bg-secondary">
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-primary hover:bg-secondary"
+          >
             <Icon name="Plus" size={16} className="mr-2" />
             Добавить достижение
           </Button>
@@ -131,11 +137,28 @@ const AchievementDashboard = () => {
                     </div>
 
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button
+                        onClick={() =>
+                          alert(`Просмотр достижения: ${achievement.name}`)
+                        }
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                      >
                         <Icon name="Eye" size={14} className="mr-1" />
                         Просмотр
                       </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button
+                        onClick={() => {
+                          navigator.share?.({
+                            title: achievement.name,
+                            text: achievement.description,
+                          }) || alert(`Поделиться: ${achievement.name}`);
+                        }}
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                      >
                         <Icon name="Share" size={14} className="mr-1" />
                         Поделиться
                       </Button>
@@ -185,6 +208,11 @@ const AchievementDashboard = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        <AddAchievementModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+        />
       </div>
     </section>
   );
